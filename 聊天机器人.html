@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .d1{
+        width:400px;
+        margin: auto;
+    }
+    .d2{
+        background-color: black;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+    }
+    .d3{
+        height:400px;
+        background-color: #f5f5f5;
+        overflow: scroll;
+    }
+    .d4{
+        display:flex;
+        margin: 20px 10px;
+        font-size: 14px;
+    }
+    .d5{
+        border-style: solid;
+        border-color: lightgrey;
+        border-width: 1px;
+        border-radius: 5px;
+        padding: 5px;
+        margin-left: 10px;
+        margin-right:50px;
+    }
+    .d6{
+        display: none;
+        position: absolute;
+        bottom:45px;
+        left:10px;
+        font-size: 14px;
+        background-color: lightgoldenrodyellow;
+        border-style: solid;
+        border-width: 1px;
+        border-color: gainsboro;
+        padding: 7px;
+    }
+    .d7{
+        border-style: solid;
+        border-color: lightgrey;
+        border-width: 1px;
+        border-radius: 5px;
+        background-color:greenyellow;
+        padding: 5px;
+        margin-right: 10px;
+        margin-left:50px;
+    }
+    img{
+        width:30px;
+        height: 30px;
+        border-style: solid;
+        border-color: transparent;
+        border-radius:100%;
+    }
+    form{
+        order:1;
+        justify-self:flex-start;
+        background-color:#ebebeb;
+        border-style:solid;
+        border-color: lightgrey;
+        padding: 7px;
+    }
+    input[type="text"]{
+        border-radius:20px;
+        border-width: 1px;
+        border-color: lightgrey;
+        width:310px;
+        height: 30px;
+        outline: none;
+    }
+    input[type="submit"]{
+        background-color:#02cb0b;
+        color: white;
+        height: 30px;
+        padding: 0 10px;
+        margin-left: 5px;
+        border-width: 1px;
+        outline: none;
+    }
+    input[type="submit"]:hover{
+        cursor:pointer;
+        text-decoration:none;
+        filter: brightness(1.1);
+    }
+</style>
+<body>
+<div class="d1">
+    <div class="d2">聊天机器人</div>
+    <div class="d3">
+        <div class="d4">
+            <img src="img/2.jfif" alt="机器人菲菲"><div class="d5">您好！我是菲菲，非常欢迎您的到来，有什么想和我聊聊的吗？</div>
+        </div>
+    </div>
+    <form>
+        <div class="d6">输入内容不能为空</div>
+        <input type="text" placeholder="在这里输入文字" id="entry" onblur="hide()">
+        <input type="submit" value="发送" onclick="send();return false">
+    </form>
+</div>
+
+<script>
+    function send(){
+        let name=document.getElementById("entry").value;
+        let url="http://www.xhxly.cn:8080/api.php?key=free&appid=0&msg="+name;
+        if(name.match(/^[ ]*$/)) {
+            document.querySelector(".d6").style.display = "block";
+            document.getElementById("entry").focus();
+        }
+        else{
+            let div=document.createElement("div");
+            document.querySelector(".d3").append(div);
+            div.outerHTML=`<div class="d4" style="justify-content: flex-end"><div class="d7">${name}</div><img src="img/4.jfif"></div>`;
+            document.getElementById("entry").value="";
+            document.querySelector(".d3").scrollTop=document.querySelector(".d3").scrollHeight;
+            let xtr =new XMLHttpRequest();
+            xtr.open("GET",url,true);
+            xtr.send();
+            xtr.onreadystatechange=function(){
+                if (xtr.readyState == 4 && xtr.status == 200) {
+                    let obj=JSON.parse(xtr.responseText);
+                    let reply=document.createElement("div");
+                    document.querySelector(".d3").append(reply);
+                    reply.outerHTML=`<div class="d4"><img src="img/2.jfif" alt="机器人菲菲"><div class="d5">${obj.content}</div></div>`;
+                    document.querySelector(".d3").scrollTop=document.querySelector(".d3").scrollHeight;
+                }
+            };
+        }
+    }
+
+    function hide(){
+        document.querySelector(".d6").style.display = "none";
+    }
+</script>
+</body>
+</html>
